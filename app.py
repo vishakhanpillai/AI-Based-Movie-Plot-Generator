@@ -1,6 +1,7 @@
 import streamlit as st
 from groq import Groq
 from pdf_generator import generate_pdf_bytes
+from image_gen import generate_stability_image
 
 client = Groq(api_key="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")
 
@@ -147,6 +148,28 @@ if st.button("🎬 Generate Movie Plot and Scene"):
             st.markdown(f'<div class="script-box">{scene_text}</div>', unsafe_allow_html=True)
 
             pdf_buffer = generate_pdf_bytes(plot_text, scene_text)
+            # Generate image from scene using Stability AI
+            if scene_text:
+                with st.spinner("🎨 Generating scene image with Stability AI..."):
+                    try:
+                        img = generate_stability_image(scene_text)
+                        st.image(img, caption="🎬 Scene Visualization", use_container_width=True)
+
+                        # Prepare image bytes for download
+                        from io import BytesIO
+
+                        buf = BytesIO()
+                        img.save(buf, format="JPEG")
+                        byte_im = buf.getvalue()
+
+                        st.download_button(
+                            label="📥 Download Scene Image",
+                            data=byte_im,
+                            file_name="scene.jpeg",
+                            mime="image/jpeg"
+                        )
+                    except Exception as e:
+                        st.error(f"❌ Image generation failed: {e}")
 
             st.download_button(
                 label="📥 Download Plot & Script as PDF",
