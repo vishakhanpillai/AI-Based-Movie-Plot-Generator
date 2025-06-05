@@ -1,9 +1,12 @@
 import requests
 from io import BytesIO
 from PIL import Image
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
 API_URL = "https://api.stability.ai/v2beta/stable-image/generate/sd3"
-API_KEY = "sk-zoohnJgT6H6hSvlw1EVHGiqQURGyxlsDwW5PDM6CwOCLrtVe"  # Replace with your actual key
+API_KEY = os.getenv("STABILITY_API_KEY")
 
 
 def generate_stability_image(prompt: str) -> Image.Image:
@@ -22,7 +25,6 @@ def generate_stability_image(prompt: str) -> Image.Image:
             "output_format": "jpeg",
         },
     )
-
     if response.status_code == 200:
         # Load the image from bytes into PIL Image object
         return Image.open(BytesIO(response.content))

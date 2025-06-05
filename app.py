@@ -1,9 +1,15 @@
+import os
+
 import streamlit as st
+from dotenv import load_dotenv
 from groq import Groq
 from pdf_generator import generate_pdf_bytes
 from image_gen import generate_stability_image
 
-client = Groq(api_key="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")
+load_dotenv()
+
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+client = Groq(api_key=GROQ_API_KEY)
 
 # Page config
 st.set_page_config(
@@ -95,7 +101,7 @@ with st.sidebar:
     characters = st.text_area("👥 Main Characters", "Nova, Zeke, Captain Orlan")
 
     st.markdown("---")
-    model_choice = st.selectbox("🧠 Model", ["meta-llama/llama-4-scout-17b-16e-instruct", "llama3-70b-8192", "llama3-8b-8192"])
+    model_choice = st.selectbox("🧠 Model", ["meta-llama/llama-4-scout-17b-16e-instruct", "llama3-70b-8192", "llama3-8b-8192", "deepseek-r1-distill-llama-70bs"])
     temperature = st.slider("🎲 Creativity (Temperature)", 0.0, 1.0, 0.7)
 
 # Main generate button
